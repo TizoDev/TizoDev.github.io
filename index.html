@@ -192,6 +192,12 @@ footer img {
         gap: 10px;
     }
 
+    .flechita
+    {
+        text-align: left;
+        left: 0;
+    }
+
         </style>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
@@ -238,11 +244,11 @@ footer img {
     </html>
         <div class="menu">
             <div class="menu-item">
-                <button class="menu-title" onclick="toggleMenu(0)"><b>Primeros Auxilios </b></button>
+                <button class="menu-title" onclick="toggleMenu(0)"></i><b>Primeros Auxilios </b><i class="fa-solid fa-chevron-down flechita"></i></button>
                 <div class="menu-content">
                     <div class="menu" style="left: -10%;">
                         <div class="menu-item">
-                            <button class="menu-title menu-sub-title" onclick="toggleMenu(1)"><b>RCP</b></button>
+                            <button class="menu-title menu-sub-title" onclick="toggleMenu(1)"><b>RCP</b><i class="fa-solid fa-chevron-down flechita"></i></button>
                             <div class="menu-content">
                                 <p>Una persona necesita maniobras de RCP (Reanimaci&oacute;n Cardiopulmonar) si est&aacute; inconsciente y no respira.</p>
                                 <p>Pasos para hacer RCP</p>
@@ -264,7 +270,7 @@ footer img {
                             </div>
                         </div>
                         <div class="menu-item">
-                            <button class="menu-title menu-sub-title" onclick="toggleMenu(2)"><b>Hemorragias y Heridas</b></button>
+                            <button class="menu-title menu-sub-title" onclick="toggleMenu(2)"><b>Hemorragias y Heridas</b><i class="fa-solid fa-chevron-down flechita"></i></button>
                             <div class="menu-content">
                                 <h1>¿Qu&eacute; hacer ante una hemorragia?</h1>
                                 <p>Es fundamental aplicar presi&oacute;n directa para controlar el sangrado lo m&aacute;s r&aacute;pido posible. Tener conocimientos en Primeros Auxilios es clave para saber qu&eacute; hacer y c&oacute;mo actuar ante una emergencia.</p>
@@ -285,7 +291,7 @@ footer img {
                             </div>
                         </div>
                         <div class="menu-item">
-                            <button class="menu-title menu-sub-title" onclick="toggleMenu(3)"><b>Emergencias</b></button>
+                            <button class="menu-title menu-sub-title" onclick="toggleMenu(3)"><b>Emergencias</b><i class="fa-solid fa-chevron-down flechita"></i></button>
                             <div class="menu-content">
                                 <div class="grid" style="font-size: 40px;  gap: 0px;">
                                     <div class="icon-container">
@@ -317,7 +323,7 @@ footer img {
                 </div>
             </div>
             <div class="menu-item">
-                <button class="menu-title" onclick="toggleMenu(4)"><b>Ahogamiento</b></button>
+                <button class="menu-title" onclick="toggleMenu(4)"><b>Ahogamiento</b><i class="fa-solid fa-chevron-down flechita"></i></button>
                 <div class="menu-content">
                     <p>C&oacute;mo actuar:</p>
                     <p>Seguridad del rescatador: Antes de intentar cualquier rescate, asegurarse de que no se pone en peligro la propia vida. Utilizar elementos flotantes como pueden ser GARRAFAS, MADERAS,RUEDAS DE AUTO o cuerdas para alcanzar a la persona en peligro SIN ENTRAR EN EL AGUA, si es posible</p>
@@ -327,7 +333,7 @@ footer img {
                 </div>
             </div>
             <div class="menu-item">
-                <button class="menu-title" onclick="toggleMenu(5)"><b>Evacuaci&oacute;n</b></button>
+                <button class="menu-title" onclick="toggleMenu(5)"><b>Evacuaci&oacute;n</b><i class="fa-solid fa-chevron-down flechita"></i></button>
                 <div class="menu-content">
                     <p>El Municipio dispuso cuatro centros de evacuaci&oacute;n en:</p>
                     <p>Calle Bel&eacute;n (Güemes 250).</p>
@@ -340,13 +346,13 @@ footer img {
                 </div>
             </div>
             <div class="menu-item">
-                <button class="menu-title" onclick="toggleMenu(6)"><b>Prevenir Enfermedades</b></button>
+                <button class="menu-title" onclick="toggleMenu(6)"><b>Prevenir Enfermedades</b><i class="fa-solid fa-chevron-down flechita"></i></button>
                 <div class="menu-content">
                     <p>Es indispensable reforzar las medidas higi&eacute;nico-diet&eacute;ticas (lavado de manos, uso de alcohol en gel, lavado de manos antes de manipular alimentos, limpieza de superficies con lavandina al 1%; provisi&oacute;n de agua y alimentos seguros) y disponer de una adecuada disposici&oacute;n de residuos y eliminaci&oacute;n de excretas.</p>
                     <a href="https://www.argentina.gob.ar/salud/dinesa/recomendaciones/control-inundaciones-inmunoprevenibles" target="_blank">M&aacute;s Informacion (Fuente)</a>
                 </div>
             <div class="menu-item">
-                <button class="menu-title" onclick="toggleMenu(7)"><b> M&aacutes Contactos</b></button>
+                <button class="menu-title" onclick="toggleMenu(7)"><b> M&aacutes Contactos</b><i class="fa-solid fa-chevron-down flechita"></i></button>
                 <div class="menu-content" style="font-size: 40px;">
                     <p><a href="https://web.facebook.com/municipiobahia" target="_blank">Facebook</a></p>
                     <p><a href="https://www.instagram.com/municipiobahia/" target="_blank">Instagram</a></p>
@@ -385,6 +391,7 @@ footer img {
         <footer>
             <a href="https://abc.gob.ar/secretarias/areas/subsecretaria-de-educacion/educacion-tecnico-profesional/dir-de-ed-tecnica/direccion-de" target="_blank"><img src="imagenes/DETPNG.png" alt="Imagen 1"></a>
             <a href="https://eest5mdp.edu.ar/" target="_blank"><img src="imagenes/tecnica5.png" alt="Imagen 2"></a>
+            <p style="font-size: 35px; text-align: center;">7mo a&ntilde;o de la Escuela de Educacion Secundaria Tecnica Numero 5 de Mar del Plata</p>
         </footer>
 
         <script>
