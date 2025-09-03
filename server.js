@@ -12,6 +12,7 @@ const __dirname = dirname(__filename);
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const IMAGES_DIR = join(__dirname, 'imagenes');
 if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR, { recursive: true });
@@ -116,6 +117,7 @@ app.post('/api/modPortafolio', upload.fields([
 });
 
 app.post('/api/delProyecto', async (req, res) => {
+  console.log("BODY DEL PROYECTO:", req.body);
   try {
     const { id } = req.body;
     const eliminado = await deleteProyecto(id);
