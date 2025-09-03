@@ -94,9 +94,8 @@ export async function updatePortafolio(titulo, subtitulo, sobre_mi, experiencia,
   if (!db) return;
   try {
     const sql =
-      'UPDATE portafolio SET titulo = $1, subtitulo = $2, sobre_mi = $3, experiencia = $4, fondo_imagen = $5, perfil_imagen = $6 WHERE id = $7 RETURNING *';
+      'UPDATE portafolio SET titulo = $1, subtitulo = $2, sobre_mi = $3, experiencia = $4, fondo_imagen = COALESCE($5, fondo_imagen), perfil_imagen = COALESCE($6, perfil_imagen) WHERE id = $7 RETURNING *';
     const result = await db.query(sql, [titulo,subtitulo,sobre_mi,experiencia,fondo_imagen,perfil_imagen,1]);
-    console.log(result.rowCount);
     return result.rows[0];
   } finally {
     await db.end();

@@ -1,89 +1,130 @@
-//Imports
 import express from 'express';
 import multer, { diskStorage } from 'multer';
 import path, { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { getRows, registroCorrecto, insertInto, updateProyecto, updatePortafolio, deleteProyecto, updateProyectosinImagen, updatePortafolioSinImagenes, insertIntoSinImagen } from './funcionesbd.js';
+import fs from 'fs';
 import cors from 'cors';
+import {getRows, registroCorrecto, insertInto, updateProyecto,updatePortafolio, deleteProyecto, updateProyectosinImagen} from './funcionesbd.js';
 
 const app = express();
-const port = process.env.PORT || 8081;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-app.use(cors()); //Se utiliza Cors para que se puedan hacer llamados a la API desde el LocalHost
-//Le indicamos a app que utilize la carpeta de public
-app.use(express.static(join(__dirname, 'public')));
-app.use('/imagenes', express.static(join(__dirname, 'imagenes')));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
-const storage = diskStorage({
-    destination: (req, file, cb) => cb(null, "imagenes/"),
-    filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
-});
+const IMAGES_DIR = join(__dirname, 'imagenes');
+if (!fs.existsSync(IMAGES_DIR)) fs.mkdirSync(IMAGES_DIR, { recursive: true });
 
+app.use('/imagenes', express.static(IMAGES_DIR));
+
+const storage = diskStorage({
+  destination: (_req, _file, cb) => cb(null, IMAGES_DIR),
+  filename: (_req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+});
 const upload = multer({ storage });
 
-app.post('/api/inicioSesion', async function(req,res){
+function publicUrl(req, filename) {
+  if (!filename) return null;
+  const proto = req.headers['x-forwarded-proto'] || req.protocol || 'http';
+  const host = req.headers['x-forwarded-host'] || req.get('host');
+  return `${proto}://${host}/imagenes/${filename}`;
+}
+
+app.get('/api/proyectos', async (_req, res) => {
+  try {
+    const usu = await getRows(1);
+    res.json(usu);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Error obteniendo proyectos' });
+  }
+});
+
+app.get('/api/portafolio', async (_req, res) => {
+  try {
+    const usu = await getRows(0);
+    res.json(usu);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Error obteniendo portafolio' });
+  }
+});
+
+app.post('/api/inicioSesion', async (req, res) => {
+  try {
     const { nombre, password } = req.body;
-    console.log(nombre);
-    await registroCorrecto(nombre, password)
-    .then(async result => {
-        let respuesta = true;
-        console.log(result);
-        if(result[0] != null) respuesta = true;
-        else respuesta = false;
-
-        res.json(respuesta);
-    })
-    .catch(err => res.status(500).send(err));
+    const result = await registroCorrecto(nombre, password);
+    const ok = !!(result && result[0]);
+    res.json(ok);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Error en inicio de sesión' });
+  }
 });
 
-app.post('/api/modProyecto', upload.single("imagen"), async function(req,res){
-    const { id, titulo, descripcion } = req.body;
-    const imagen = req.file ? `/imagenes/${req.file.filename}` : null;
-    if(imagen != null) await updateProyecto(id, titulo, descripcion, imagen);
-    else await updateProyectosinImagen(id, titulo, descripcion);
-});
-
-app.post('/api/addProyecto', upload.single("imagen"), async function(req,res){
+app.post('/api/addProyecto', upload.single('imagen'), async (req, res) => {
+  try {
     const { titulo, descripcion } = req.body;
-    const imagen = req.file ? `/imagenes/${req.file.filename}` : null;
-    if(imagen != null) await insertInto(titulo, descripcion, imagen);
-    else await insertIntoSinImagen(titulo, descripcion);
+    const imgUrl = req.file ? publicUrl(req, req.file.filename) : null;
+    const creado = await insertInto(titulo, descripcion, imgUrl);
+    res.status(201).json({ ok: true, data: creado });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ ok: false, error: 'Error creando proyecto' });
+  }
+});
+
+app.post('/api/modProyecto', upload.single('imagen'), async (req, res) => {
+  try {
+    const { id, titulo, descripcion } = req.body;
+    const imgUrl = req.file ? publicUrl(req, req.file.filename) : null;
+
+    const actualizado = imgUrl
+      ? await updateProyecto(id, titulo, descripcion, imgUrl)
+      : await updateProyectosinImagen(id, titulo, descripcion);
+
+    res.json({ ok: true, data: actualizado });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ ok: false, error: 'Error modificando proyecto' });
+  }
 });
 
 app.post('/api/modPortafolio', upload.fields([
-    { name: "fondo", maxCount: 1 },
-    { name: "perfil", maxCount: 1 }
-  ]), async (req, res) => {
+  { name: 'fondo', maxCount: 1 },
+  { name: 'perfil', maxCount: 1 }
+]), async (req, res) => {
+  try {
     const { titulo, subtitulo, sobre_mi, experiencia } = req.body;
-    const fondo_imagen = req.files["fondo"] ? `/imagenes/${req.files["fondo"][0].filename}` : null;
-    const perfil_imagen = req.files["perfil"] ? `/imagenes/${req.files["perfil"][0].filename}` : null;
-  
-    if(fondo_imagen != null && perfil_imagen!= null) await updatePortafolio(titulo, subtitulo, sobre_mi, experiencia, fondo_imagen, perfil_imagen);
-    else await updatePortafolioSinImagenes(titulo, subtitulo, sobre_mi, experiencia);
+
+    const fondoFile = req.files?.['fondo']?.[0]?.filename;
+    const perfilFile = reqfiles?.['perfil']?.[0]?.filename; // <-- corregir typo si lo pegas: req.files
+
+    const fondo_imagen = fondoFile ? publicUrl(req, fondoFile) : null;
+    const perfil_imagen = perfilFile ? publicUrl(req, perfilFile) : null;
+
+    const updated = await updatePortafolio(
+      titulo, subtitulo, sobre_mi, experiencia, fondo_imagen, perfil_imagen
+    );
+
+    res.json({ ok: true, data: updated });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ ok: false, error: 'Error modificando portafolio' });
+  }
 });
 
-app.post('/api/delProyecto', async function(req,res){
-    const { id } = req.body; //Valores del usuario
-    await deleteProyecto(id);
+app.post('/api/delProyecto', async (req, res) => {
+  try {
+    const { id } = req.body;
+    const eliminado = await deleteProyecto(id);
+    res.json({ ok: true, data: eliminado });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ ok: false, error: 'Error eliminando proyecto' });
+  }
 });
 
-//Api que guarda los valores de todos los proyectos
-app.get('/api/proyectos', async (req, res) => {
-    let usu = await getRows(1);
-    res.json(usu);
-});
-
-//Api que guarda los valores del portafolio
-app.get('/api/portafolio', async (req, res) => {
-    let usu = await getRows(0);
-    res.json(usu);
-});
-
-
-//Iniciando el servidor
-app.listen(port, () => {
-    console.log(`Listening on http://localhost:${port}`);
-});
+const port = process.env.PORT || 8081;
+app.listen(port, () => console.log(`API escuchando en :${port}`));
