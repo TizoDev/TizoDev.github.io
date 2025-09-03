@@ -98,15 +98,8 @@ app.post('/api/modPortafolio', upload.fields([
 ]), async (req, res) => {
   try {
     const { titulo, subtitulo, sobre_mi, experiencia } = req.body;
-
-    const fondoFile = req.files?.['fondo']?.[0]?.filename;
-    const perfilFile = reqfiles?.['perfil']?.[0]?.filename; // <-- corregir typo si lo pegas: req.files
-
-    const fondo_imagen = fondoFile ? publicUrl(req, fondoFile) : "/react.svg";;
-    const perfil_imagen = perfilFile ? publicUrl(req, perfilFile) : "/react.svg";;
-
     const updated = await updatePortafolio(
-      titulo, subtitulo, sobre_mi, experiencia, fondo_imagen, perfil_imagen
+      titulo, subtitulo, sobre_mi, experiencia, '/', '/'
     );
 
     res.json({ ok: true, data: updated });
