@@ -99,7 +99,7 @@ app.post('/api/modPortafolio', upload.fields([
   try {
     const { titulo, subtitulo, sobre_mi, experiencia } = req.body;
     const updated = await updatePortafolio(
-      titulo, subtitulo, sobre_mi, experiencia, '/', '/'
+      titulo, subtitulo, sobre_mi, experiencia, '/imagenes/1756859261642.jpg', '/imagenes/1756859261652.jpg'
     );
 
     res.json({ ok: true, data: updated });
