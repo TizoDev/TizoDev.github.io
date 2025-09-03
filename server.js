@@ -67,7 +67,7 @@ app.post('/api/inicioSesion', async (req, res) => {
 app.post('/api/addProyecto', upload.single('imagen'), async (req, res) => {
   try {
     const { titulo, descripcion } = req.body;
-    const imgUrl = req.file ? publicUrl(req, req.file.filename) : null;
+    const imgUrl = req.file ? publicUrl(req, req.file.filename) : "/react.svg";
     const creado = await insertInto(titulo, descripcion, imgUrl);
     res.status(201).json({ ok: true, data: creado });
   } catch (e) {
@@ -79,7 +79,7 @@ app.post('/api/addProyecto', upload.single('imagen'), async (req, res) => {
 app.post('/api/modProyecto', upload.single('imagen'), async (req, res) => {
   try {
     const { id, titulo, descripcion } = req.body;
-    const imgUrl = req.file ? publicUrl(req, req.file.filename) : null;
+    const imgUrl = req.file ? publicUrl(req, req.file.filename) : "/react.svg";;
 
     const actualizado = imgUrl
       ? await updateProyecto(id, titulo, descripcion, imgUrl)
@@ -102,8 +102,8 @@ app.post('/api/modPortafolio', upload.fields([
     const fondoFile = req.files?.['fondo']?.[0]?.filename;
     const perfilFile = reqfiles?.['perfil']?.[0]?.filename; // <-- corregir typo si lo pegas: req.files
 
-    const fondo_imagen = fondoFile ? publicUrl(req, fondoFile) : null;
-    const perfil_imagen = perfilFile ? publicUrl(req, perfilFile) : null;
+    const fondo_imagen = fondoFile ? publicUrl(req, fondoFile) : "/react.svg";;
+    const perfil_imagen = perfilFile ? publicUrl(req, perfilFile) : "/react.svg";;
 
     const updated = await updatePortafolio(
       titulo, subtitulo, sobre_mi, experiencia, fondo_imagen, perfil_imagen
